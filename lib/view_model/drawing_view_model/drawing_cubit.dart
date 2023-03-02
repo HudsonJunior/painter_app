@@ -1,47 +1,43 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class DrawingState {
-  final Color currentColor;
-  final double currentStrokeWidth;
+class AppPaint extends Equatable {
+  final Color color;
+  final double strokeWidth;
 
-  DrawingState({
-    required this.currentColor,
-    required this.currentStrokeWidth,
+  const AppPaint({
+    required this.color,
+    required this.strokeWidth,
   });
 
-  factory DrawingState.firstState() => DrawingState(
-        currentColor: Colors.black,
-        currentStrokeWidth: 2.0,
+  factory AppPaint.initial() => const AppPaint(
+        color: Colors.black,
+        strokeWidth: 2.0,
       );
 
-  DrawingState copyWith({
-    Color? currentColor,
-    double? currentStrokeWidth,
+  @override
+  List<Object?> get props => [color, strokeWidth];
+
+  AppPaint copyWith({
+    Color? color,
+    double? strokeWidth,
   }) {
-    return DrawingState(
-      currentColor: currentColor ?? this.currentColor,
-      currentStrokeWidth: currentStrokeWidth ?? this.currentStrokeWidth,
+    return AppPaint(
+      color: color ?? this.color,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
     );
   }
 }
 
-class DrawingCubit extends Cubit<DrawingState> {
-  DrawingCubit() : super(DrawingState.firstState());
-
-  final Paint currentPaint = Paint()
-    ..strokeCap = StrokeCap.round
-    ..isAntiAlias = true
-    ..strokeWidth = 2.0
-    ..color = Colors.black;
+class DrawingCubit extends Cubit<AppPaint> {
+  DrawingCubit() : super(AppPaint.initial());
 
   void updateCurrentColor(Color newColor) {
-    emit(state.copyWith(currentColor: newColor));
-    currentPaint.color = newColor;
+    emit(state.copyWith(color: newColor));
   }
 
   void updateCurrentStrokeWidth(double newStrokeWidth) {
-    emit(state.copyWith(currentStrokeWidth: newStrokeWidth));
-    currentPaint.strokeWidth = newStrokeWidth;
+    emit(state.copyWith(strokeWidth: newStrokeWidth));
   }
 }

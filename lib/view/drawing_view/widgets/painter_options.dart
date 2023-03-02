@@ -1,72 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class PainterOptions extends StatefulWidget {
+class PainterOptions extends StatelessWidget {
   const PainterOptions({
     Key? key,
-    required this.height,
+    required this.onClean,
   }) : super(key: key);
 
-  final double height;
-
-  @override
-  State<PainterOptions> createState() => _PainterOptionsState();
-}
-
-class _PainterOptionsState extends State<PainterOptions> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  final VoidCallback onClean;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.height,
-      width: 60,
-      decoration: const BoxDecoration(
-        color: Colors.amber,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24.0),
-          bottomRight: Radius.circular(24.0),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.height > MediaQuery.of(context).size.height * 0.1)
-              Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: IconButton(
-                        color: Colors.black,
-                        onPressed: () {},
-                        icon: const Icon(Icons.star_border_outlined),
-                      ),
-                    ),
-                    const Expanded(
-                      child: Text(
-                        "Salvar",
-                        style: TextStyle(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxHeight >
+                    MediaQuery.of(context).size.height * 0.05) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: IconButton(
                           color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                          // TODO: Add save method
+                          onPressed: () {},
+                          icon: const Icon(Icons.star_border_outlined),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            if (widget.height > MediaQuery.of(context).size.height * 0.1)
-              Expanded(
-                child: Column(
+                      const Expanded(
+                        child: Text(
+                          "Salvar",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: LayoutBuilder(builder: (context, constraints) {
+              if (constraints.maxHeight >
+                  MediaQuery.of(context).size.height * 0.05) {
+                return Column(
                   children: [
                     Expanded(
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: onClean,
                         icon: const Icon(
                           FontAwesomeIcons.eraser,
                           color: Colors.black,
@@ -83,10 +74,13 @@ class _PainterOptionsState extends State<PainterOptions> {
                       ),
                     ),
                   ],
-                ),
-              ),
-          ],
-        ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
+          ),
+        ],
       ),
     );
   }

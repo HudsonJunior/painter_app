@@ -14,12 +14,13 @@ class DrawingPage extends StatefulWidget {
 }
 
 class _DrawingPageState extends State<DrawingPage> {
-  Map<Paint, List<Offset>> points = {};
+  late final ValueNotifier<Map<AppPaint, List<Offset>>> points;
   late final DrawingCubit drawingCubit;
 
   @override
   void initState() {
     super.initState();
+    points = ValueNotifier({});
     drawingCubit = context.read<DrawingCubit>();
   }
 
@@ -30,13 +31,6 @@ class _DrawingPageState extends State<DrawingPage> {
         backgroundColor: Colors.amber,
         elevation: 0.0,
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.black,
-          ),
-        ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 6.0),
@@ -71,41 +65,39 @@ class _DrawingPageState extends State<DrawingPage> {
                 ),
                 child: GestureDetector(
                   onPanDown: (details) {
-                    setState(() {
-                      points = points
-                        ..update(
-                          drawingCubit.currentPaint,
-                          (listOffset) =>
-                              listOffset..add(details.localPosition),
-                          ifAbsent: () => [details.localPosition],
-                        );
-                    });
+                    points.value = Map<AppPaint, List<Offset>>.from(points.value
+                      ..update(
+                        drawingCubit.state,
+                        (listOffset) => listOffset..add(details.localPosition),
+                        ifAbsent: () => [details.localPosition],
+                      ));
                   },
                   onPanUpdate: (details) {
-                    setState(() {
-                      points = points
-                        ..update(
-                          drawingCubit.currentPaint,
-                          (listOffset) =>
-                              listOffset..add(details.localPosition),
-                          ifAbsent: () => [details.localPosition],
-                        );
-                    });
+                    points.value = Map<AppPaint, List<Offset>>.from(points.value
+                      ..update(
+                        drawingCubit.state,
+                        (listOffset) => listOffset..add(details.localPosition),
+                        ifAbsent: () => [details.localPosition],
+                      ));
                   },
-                  child: CustomPaint(
-                    painter: DrawingPainter(
-                      points: points,
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      painter: DrawingPainter(points: points),
+                      child: const SizedBox.expand(),
                     ),
-                    child: Container(),
                   ),
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               top: 0.0,
               right: 0.0,
-              child: AnimatedPainterOptions(),
-            )
+              child: AnimatedPainterOptions(
+                onClean: () {
+                  points.value = {};
+                },
+              ),
+            ),
           ],
         ),
       ),

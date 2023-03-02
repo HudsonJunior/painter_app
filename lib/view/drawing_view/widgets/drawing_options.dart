@@ -33,7 +33,7 @@ class _DrawingOptionsState extends State<DrawingOptions> {
         color: Colors.amber,
         borderRadius: BorderRadius.circular(32.0),
       ),
-      child: BlocBuilder<DrawingCubit, DrawingState>(
+      child: BlocBuilder<DrawingCubit, AppPaint>(
         bloc: drawingCubit,
         builder: (context, drawingState) {
           return Row(
@@ -42,12 +42,12 @@ class _DrawingOptionsState extends State<DrawingOptions> {
             children: [
               Expanded(
                 child: IconButton(
-                  color: drawingState.currentColor,
+                  color: drawingState.color,
                   onPressed: () {
                     ColorPicker.show(
                       context,
                       drawingCubit.updateCurrentColor,
-                      drawingState.currentColor,
+                      drawingState.color,
                     );
                   },
                   icon: const Icon(Icons.color_lens),
@@ -56,12 +56,12 @@ class _DrawingOptionsState extends State<DrawingOptions> {
               Expanded(
                 flex: 4,
                 child: Slider(
-                  value: drawingState.currentStrokeWidth,
+                  value: drawingState.strokeWidth,
                   min: 1.0,
                   max: 10.0,
-                  activeColor: drawingState.currentColor,
-                  thumbColor: drawingState.currentColor,
-                  inactiveColor: drawingState.currentColor,
+                  activeColor: drawingState.color,
+                  thumbColor: drawingState.color,
+                  inactiveColor: drawingState.color,
                   onChanged: drawingCubit.updateCurrentStrokeWidth,
                 ),
               ),

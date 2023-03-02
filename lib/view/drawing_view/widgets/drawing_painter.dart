@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:painter_app/view_model/drawing_view_model/drawing_cubit.dart';
 
 class DrawingClass {
   final Canvas canvas;
@@ -11,25 +14,35 @@ class DrawingClass {
 }
 
 class DrawingPainter extends CustomPainter {
-  final Map<Paint, List<Offset>> points;
+  final ValueNotifier<Map<AppPaint, List<Offset>>> points;
 
   DrawingPainter({
     required this.points,
-  });
+  }) : super(repaint: points);
+
+  final Paint _paint = Paint()
+    ..strokeCap = StrokeCap.round
+    ..isAntiAlias = true;
 
   @override
   void paint(Canvas canvas, Size size) async {
-    for (var paint in points.keys) {
-      for (var offsets in points.values) {
-        for (int i = 0; i < offsets.length - 1; i++) {
-          canvas.drawLine(offsets[i], offsets[i + 1], paint);
-        }
+    for (var obj in points.value.entries) {
+      _paint
+        ..color = obj.key.color
+        ..strokeWidth = obj.key.strokeWidth;
+
+      if (obj.value.length.isOdd) {
+        canvas.drawPoints(
+          PointMode.lines,
+          obj.value..add(obj.value.last),
+          _paint,
+        );
+      } else {
+        canvas.drawPoints(PointMode.lines, obj.value, _paint);
       }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

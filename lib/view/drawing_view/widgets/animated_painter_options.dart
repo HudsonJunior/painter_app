@@ -4,7 +4,9 @@ import 'package:painter_app/view/drawing_view/cubit/animated_painter_options_cub
 import 'package:painter_app/view/drawing_view/widgets/painter_options.dart';
 
 class AnimatedPainterOptions extends StatefulWidget {
-  const AnimatedPainterOptions({Key? key}) : super(key: key);
+  final VoidCallback onClean;
+  const AnimatedPainterOptions({Key? key, required this.onClean})
+      : super(key: key);
 
   @override
   State<AnimatedPainterOptions> createState() => _AnimatedPainterOptionsState();
@@ -13,11 +15,6 @@ class AnimatedPainterOptions extends StatefulWidget {
 class _AnimatedPainterOptionsState extends State<AnimatedPainterOptions>
     with SingleTickerProviderStateMixin {
   double _endPainterOptionsHeight = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +36,20 @@ class _AnimatedPainterOptionsState extends State<AnimatedPainterOptions>
         tween: Tween(begin: 0.0, end: _endPainterOptionsHeight),
         duration: const Duration(milliseconds: 300),
         builder: (context, value, child) {
-          return PainterOptions(
+          return Container(
             height: value,
+            width: 60,
+            decoration: const BoxDecoration(
+              color: Colors.amber,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24.0),
+                bottomRight: Radius.circular(24.0),
+              ),
+            ),
+            child: child,
           );
         },
+        child: PainterOptions(onClean: widget.onClean),
       ),
     );
   }

@@ -56,7 +56,7 @@ class _AnimatedDrawingOptionsState extends State<AnimatedDrawingOptions>
       child: Positioned(
         bottom: 0,
         right: 0,
-        child: BlocBuilder<DrawingCubit, DrawingState>(
+        child: BlocBuilder<DrawingCubit, AppPaint>(
           builder: (context, state) {
             return FloatingActionButton(
               onPressed: onPressedFab,
@@ -65,7 +65,7 @@ class _AnimatedDrawingOptionsState extends State<AnimatedDrawingOptions>
                 turns: Tween(begin: 0.0, end: 0.8).animate(animationController),
                 child: Icon(
                   FontAwesomeIcons.paintbrush,
-                  color: state.currentColor,
+                  color: state.color,
                 ),
               ),
             );
